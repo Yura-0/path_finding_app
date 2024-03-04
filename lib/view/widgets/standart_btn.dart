@@ -7,22 +7,23 @@ class StandartBtn extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      height: 50,
-      decoration: BoxDecoration(
-        color: const Color.fromARGB(255, 68, 186, 228),
-        borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: Colors.blue),
-      ),
-      child: GestureDetector(
-          onTap: onPressed,
-          child: Center(
+    return GestureDetector(
+      onTap: onPressed,
+      child: Container(
+        width: double.infinity,
+        height: 50,
+        decoration: BoxDecoration(
+          color: const Color.fromARGB(255, 68, 186, 228),
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(color: Colors.blue),
+        ),
+        child: Center(
             child: Text(
               text,
               style: const TextStyle(color: Colors.black),
             ),
-          )),
+          ),
+      ),
     );
   }
 }

@@ -1,6 +1,6 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 import '../widgets/standart_btn.dart';
 
@@ -13,7 +13,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   TextEditingController controller = TextEditingController();
-  bool isLink = false;
+  bool isCorrectLink = true;
 
   @override
   Widget build(BuildContext context) {
@@ -40,13 +40,11 @@ class _HomeScreenState extends State<HomeScreen> {
                   dimension: 10,
                   child: Icon(Icons.compare_arrows, color: Colors.grey),
                 ),
-          
                 SizedBox(
                   width: MediaQuery.of(context).size.width * 0.8,
                   child: TextField(
                     controller: controller,
                     decoration: const InputDecoration(
-                    
                       border: UnderlineInputBorder(
                         borderSide: BorderSide(color: Colors.black),
                       ),
@@ -54,18 +52,36 @@ class _HomeScreenState extends State<HomeScreen> {
                       hintStyle: TextStyle(color: Colors.grey),
                     ),
                     style: const TextStyle(color: Colors.black),
+                    onChanged: (value) => {
+                      setState(() {
+                        isCorrectLink = true;
+                      })
+                    },
                   ),
                 )
               ]),
-              
+              const SizedBox(
+                height: 10,
+              ),
+              Text(
+                "Incorrect link",
+                style:
+                    TextStyle(color: isCorrectLink ? Colors.white : Colors.red),
+              ),
               SizedBox(
-                height: MediaQuery.of(context).size.height * 0.7,
+                height: MediaQuery.of(context).size.height * 0.65,
               ),
               Opacity(
-                opacity: isLink ? 1 : 0.5,
+                opacity: controller.text.isNotEmpty || controller.text != ""
+                    ? 1
+                    : 0.5,
                 child: StandartBtn(
                   text: "Start counting process",
-                  onPressed: isLink ? () {} : () {},
+                  onPressed: controller.text.isNotEmpty || controller.text != ""
+                      ? () {
+                          _fetchData(controller.text);
+                        }
+                      : () {},
                 ),
               ),
             ],
@@ -74,4 +90,51 @@ class _HomeScreenState extends State<HomeScreen> {
       )),
     );
   }
+
+  // https://flutter.webspark.dev/flutter/api
+  Future<void> _fetchData(String url) async {
+  try {
+    if (Uri.parse(url).isAbsolute) {
+      var response = await http.get(Uri.parse(url));
+
+      if (response.statusCode == 200) {
+        var jsonResponse = json.decode(response.body);
+        if (jsonResponse['error'] is bool &&
+            jsonResponse['message'] is String &&
+            jsonResponse['data'] is List &&
+            jsonResponse['data'].isNotEmpty &&
+            jsonResponse['data'][0]['id'] is String &&
+            jsonResponse['data'][0]['field'] is List &&
+            jsonResponse['data'][0]['start'] != null &&
+            jsonResponse['data'][0]['end'] != null) {
+          bool error = jsonResponse['error'];
+
+          if (error) {
+            setState(() {
+              isCorrectLink = false;
+            });
+          } else {
+            // Обработка успешного ответа
+          }
+        } else {
+          setState(() {
+            isCorrectLink = false;
+          });
+        }
+      } else {
+        setState(() {
+          isCorrectLink = false;
+        });
+      }
+    } else {
+      setState(() {
+        isCorrectLink = false;
+      });
+    }
+  } catch (e) {
+    setState(() {
+      isCorrectLink = false;
+    });
+  }
+}
 }
