@@ -7,6 +7,11 @@ class Coordinates {
   Map<String, int> toJson() {
     return {'x': x, 'y': y};
   }
+
+  @override
+  String toString() {
+    return '($x;$y)';
+  }
 }
 
 class MyData {
@@ -14,10 +19,15 @@ class MyData {
   List<String> field;
   Coordinates start;
   Coordinates end;
+  String path;
 
-  MyData({required this.id, required this.field, required this.start, required this.end});
-
-
+  MyData({
+    required this.id,
+    required this.field,
+    required this.start,
+    required this.end,
+    this.path = '',
+  });
 
   factory MyData.fromJson(Map<String, dynamic> json) {
     return MyData(
@@ -25,6 +35,7 @@ class MyData {
       field: List<String>.from(json['field']),
       start: Coordinates(x: json['start']['x'], y: json['start']['y']),
       end: Coordinates(x: json['end']['x'], y: json['end']['y']),
+      path: json['path'] ?? '',
     );
   }
 
@@ -34,6 +45,7 @@ class MyData {
       'field': field,
       'start': start.toJson(),
       'end': end.toJson(),
+      'path': path,
     };
   }
 }

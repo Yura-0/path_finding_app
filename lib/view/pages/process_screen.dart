@@ -27,12 +27,17 @@ class _ProcessScreenState extends State<ProcessScreen> {
     for (int i = 0; i < widget.datas.length; i++) {
       await Future.delayed(Duration(milliseconds: 500), () {
         setState(() {
-          shortestPaths.add(findShortestPath(widget.datas[i].field,
-              widget.datas[i].start, widget.datas[i].end)[0]);
+          shortestPaths.addAll(findShortestPath(widget.datas[i].field,
+              widget.datas[i].start, widget.datas[i].end));
+          widget.datas[i].path =
+              shortestPaths.map((coord) => coord.toString()).join('->');
           _progress = (i + 1) / widget.datas.length;
+          shortestPaths = [];
         });
       });
+      
     }
+
   }
 
   @override
@@ -80,26 +85,22 @@ class _ProcessScreenState extends State<ProcessScreen> {
                   height: 100,
                   child: CircularProgressIndicator(
                     backgroundColor: Colors.grey,
-                    valueColor: const AlwaysStoppedAnimation<Color>(Colors.blue),
+                    valueColor:
+                        const AlwaysStoppedAnimation<Color>(Colors.blue),
                     value: _progress,
                     strokeWidth: 5,
                   ),
                 ),
-                 SizedBox(
-                height: MediaQuery.of(context).size.height * 0.3,
-              ),
-              Opacity(
-                opacity:  _progress * 100 < 100
-                    ? 0.5
-                    : 1,
-                child: StandartBtn(
-                  text: "Send results to server",
-                  onPressed:_progress * 100 < 100
-                      ? () {
-                        }
-                      : () {},
+                SizedBox(
+                  height: MediaQuery.of(context).size.height * 0.3,
                 ),
-              ),
+                Opacity(
+                  opacity: _progress * 100 < 100 ? 0.5 : 1,
+                  child: StandartBtn(
+                    text: "Send results to server",
+                    onPressed: _progress * 100 < 100 ? () {} : () {},
+                  ),
+                ),
               ],
             ),
           ),
