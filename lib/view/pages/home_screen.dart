@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
+import '../../core/model.dart';
 import '../widgets/standart_btn.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -93,28 +94,37 @@ class _HomeScreenState extends State<HomeScreen> {
 
   // https://flutter.webspark.dev/flutter/api
   Future<void> _fetchData(String url) async {
-  try {
-    if (Uri.parse(url).isAbsolute) {
-      var response = await http.get(Uri.parse(url));
+    try {
+      if (Uri.parse(url).isAbsolute) {
+        var response = await http.get(Uri.parse(url));
 
-      if (response.statusCode == 200) {
-        var jsonResponse = json.decode(response.body);
-        if (jsonResponse['error'] is bool &&
-            jsonResponse['message'] is String &&
-            jsonResponse['data'] is List &&
-            jsonResponse['data'].isNotEmpty &&
-            jsonResponse['data'][0]['id'] is String &&
-            jsonResponse['data'][0]['field'] is List &&
-            jsonResponse['data'][0]['start'] != null &&
-            jsonResponse['data'][0]['end'] != null) {
-          bool error = jsonResponse['error'];
+        if (response.statusCode == 200) {
+          var jsonResponse = json.decode(response.body);
+          if (jsonResponse['error'] is bool &&
+              jsonResponse['message'] is String &&
+              jsonResponse['data'] is List &&
+              jsonResponse['data'].isNotEmpty &&
+              jsonResponse['data'][0]['id'] is String &&
+              jsonResponse['data'][0]['field'] is List &&
+              jsonResponse['data'][0]['start'] != null &&
+              jsonResponse['data'][0]['end'] != null) {
+            bool error = jsonResponse['error'];
 
-          if (error) {
+            if (error) {
+              setState(() {
+                isCorrectLink = false;
+              });
+            } else {
+              List<MyData> myDataList = [];
+              for (var item in jsonResponse['data']) {
+                MyData data = MyData.fromJson(item);
+                myDataList.add(data);
+              }
+            }
+          } else {
             setState(() {
               isCorrectLink = false;
             });
-          } else {
-            // Обработка успешного ответа
           }
         } else {
           setState(() {
@@ -126,15 +136,10 @@ class _HomeScreenState extends State<HomeScreen> {
           isCorrectLink = false;
         });
       }
-    } else {
+    } catch (e) {
       setState(() {
         isCorrectLink = false;
       });
     }
-  } catch (e) {
-    setState(() {
-      isCorrectLink = false;
-    });
   }
-}
 }
