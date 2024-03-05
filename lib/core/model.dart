@@ -17,6 +17,8 @@ class MyData {
 
   MyData({required this.id, required this.field, required this.start, required this.end});
 
+
+
   factory MyData.fromJson(Map<String, dynamic> json) {
     return MyData(
       id: json['id'],

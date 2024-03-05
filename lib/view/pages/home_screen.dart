@@ -4,6 +4,7 @@ import 'dart:convert';
 
 import '../../core/model.dart';
 import '../widgets/standart_btn.dart';
+import 'process_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -13,8 +14,8 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  TextEditingController controller = TextEditingController();
-  bool isCorrectLink = true;
+  final TextEditingController _controller = TextEditingController();
+  bool _isCorrectLink = true;
 
   @override
   Widget build(BuildContext context) {
@@ -44,7 +45,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 SizedBox(
                   width: MediaQuery.of(context).size.width * 0.8,
                   child: TextField(
-                    controller: controller,
+                    controller: _controller,
                     decoration: const InputDecoration(
                       border: UnderlineInputBorder(
                         borderSide: BorderSide(color: Colors.black),
@@ -55,7 +56,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     style: const TextStyle(color: Colors.black),
                     onChanged: (value) => {
                       setState(() {
-                        isCorrectLink = true;
+                        _isCorrectLink = true;
                       })
                     },
                   ),
@@ -67,20 +68,20 @@ class _HomeScreenState extends State<HomeScreen> {
               Text(
                 "Incorrect link",
                 style:
-                    TextStyle(color: isCorrectLink ? Colors.white : Colors.red),
+                    TextStyle(color: _isCorrectLink ? Colors.white : Colors.red),
               ),
               SizedBox(
                 height: MediaQuery.of(context).size.height * 0.65,
               ),
               Opacity(
-                opacity: controller.text.isNotEmpty || controller.text != ""
+                opacity: _controller.text.isNotEmpty || _controller.text != ""
                     ? 1
                     : 0.5,
                 child: StandartBtn(
                   text: "Start counting process",
-                  onPressed: controller.text.isNotEmpty || controller.text != ""
+                  onPressed: _controller.text.isNotEmpty || _controller.text != ""
                       ? () {
-                          _fetchData(controller.text);
+                          _fetchData(_controller.text);
                         }
                       : () {},
                 ),
@@ -112,7 +113,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
             if (error) {
               setState(() {
-                isCorrectLink = false;
+                _isCorrectLink = false;
               });
             } else {
               List<MyData> myDataList = [];
@@ -120,25 +121,26 @@ class _HomeScreenState extends State<HomeScreen> {
                 MyData data = MyData.fromJson(item);
                 myDataList.add(data);
               }
+              Navigator.push(context, MaterialPageRoute(builder: (context) => ProcessScreen(url: url, datas: myDataList)));
             }
           } else {
             setState(() {
-              isCorrectLink = false;
+              _isCorrectLink = false;
             });
           }
         } else {
           setState(() {
-            isCorrectLink = false;
+            _isCorrectLink = false;
           });
         }
       } else {
         setState(() {
-          isCorrectLink = false;
+          _isCorrectLink = false;
         });
       }
     } catch (e) {
       setState(() {
-        isCorrectLink = false;
+        _isCorrectLink = false;
       });
     }
   }
