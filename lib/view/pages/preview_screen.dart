@@ -16,6 +16,7 @@ class PreviewScreen extends StatelessWidget {
           'Preview screen',
           style: TextStyle(color: Colors.white),
         ),
+        iconTheme: const IconThemeData(color: Colors.white),
       ),
       body: SafeArea(
         child: SingleChildScrollView(

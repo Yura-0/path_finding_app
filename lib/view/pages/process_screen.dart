@@ -53,6 +53,7 @@ class _ProcessScreenState extends State<ProcessScreen> {
           'Process Screen',
           style: TextStyle(color: Colors.white),
         ),
+        iconTheme: const IconThemeData(color: Colors.white),
       ),
       body: SafeArea(
         child: Padding(

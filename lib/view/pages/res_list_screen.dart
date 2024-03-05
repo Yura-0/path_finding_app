@@ -12,8 +12,11 @@ class ResListScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.blue,
-        title: const Text('Result list screen',
-            style: TextStyle(color: Colors.white)),
+        title: const Text(
+          'Result list screen',
+          style: TextStyle(color: Colors.white),
+        ),
+        iconTheme: const IconThemeData(color: Colors.white),
       ),
       body: SafeArea(
         child: ListView.separated(
