@@ -142,6 +142,7 @@ class _ProcessScreenState extends State<ProcessScreen> {
     String jsonData = json.encode(dataToSend);
 
     try {
+      showLoadingDialog(context);
       final response = await http.post(
         Uri.parse(url),
         headers: <String, String>{
@@ -150,6 +151,7 @@ class _ProcessScreenState extends State<ProcessScreen> {
         body: jsonData,
       );
       if (response.statusCode == 200) {
+         Navigator.of(context).pop();
         Navigator.push(
           context,
           MaterialPageRoute(
@@ -159,14 +161,36 @@ class _ProcessScreenState extends State<ProcessScreen> {
           ),
         );
       } else {
+         Navigator.of(context).pop();
         setState(() {
           _isPosted = false;
         });
       }
     } catch (e) {
+       Navigator.of(context).pop();
       setState(() {
         _isPosted = false;
       });
     }
   }
+
+  void showLoadingDialog(BuildContext context) {
+  showDialog(
+    context: context,
+    barrierDismissible: false,
+    builder: (BuildContext context) {
+      return Stack(
+        children: <Widget>[
+          ModalBarrier(
+            color: Colors.white.withOpacity(0.5),
+            dismissible: false,
+          ),
+          const Center(
+            child: CircularProgressIndicator(),
+          ),
+        ],
+      );
+    },
+  );
+}
 }

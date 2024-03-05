@@ -97,6 +97,7 @@ class _HomeScreenState extends State<HomeScreen> {
   // https://flutter.webspark.dev/flutter/api
   Future<void> _fetchData(String url) async {
     try {
+       showLoadingDialog(context);
       if (Uri.parse(url).isAbsolute) {
         var response = await http.get(Uri.parse(url));
 
@@ -113,10 +114,12 @@ class _HomeScreenState extends State<HomeScreen> {
             bool error = jsonResponse['error'];
 
             if (error) {
+               Navigator.of(context).pop();
               setState(() {
                 _isCorrectLink = false;
               });
             } else {
+               Navigator.of(context).pop();
               List<MyData> myDataList = [];
               for (var item in jsonResponse['data']) {
                 MyData data = MyData.fromJson(item);
@@ -125,24 +128,48 @@ class _HomeScreenState extends State<HomeScreen> {
               Navigator.push(context, MaterialPageRoute(builder: (context) => ProcessScreen(url: url, datas: myDataList)));
             }
           } else {
+             Navigator.of(context).pop();
             setState(() {
               _isCorrectLink = false;
             });
           }
         } else {
+           Navigator.of(context).pop();
           setState(() {
             _isCorrectLink = false;
           });
         }
       } else {
+         Navigator.of(context).pop();
         setState(() {
           _isCorrectLink = false;
         });
       }
     } catch (e) {
+       Navigator.of(context).pop();
       setState(() {
         _isCorrectLink = false;
       });
     }
   }
+
+  void showLoadingDialog(BuildContext context) {
+  showDialog(
+    context: context,
+    barrierDismissible: false,
+    builder: (BuildContext context) {
+      return Stack(
+        children: <Widget>[
+          ModalBarrier(
+            color: Colors.white.withOpacity(0.5),
+            dismissible: false,
+          ),
+          const Center(
+            child: CircularProgressIndicator(),
+          ),
+        ],
+      );
+    },
+  );
+}
 }
