@@ -8,7 +8,8 @@ class GridWidget extends StatelessWidget {
   final Coordinates end;
   final List<Coordinates> steps;
 
-  const GridWidget({super.key, 
+  const GridWidget({
+    super.key,
     required this.field,
     required this.start,
     required this.end,
@@ -60,9 +61,8 @@ class GridWidget extends StatelessWidget {
           return Container(
             decoration: BoxDecoration(
               border: Border.all(color: Colors.black),
-               color: cellColor,
+              color: cellColor,
             ),
-           
             child: Center(
               child: Text(
                 '(${currentCoordinate.x},${currentCoordinate.y})',

@@ -18,11 +18,11 @@ class StandartBtn extends StatelessWidget {
           border: Border.all(color: Colors.blue),
         ),
         child: Center(
-            child: Text(
-              text,
-              style: const TextStyle(color: Colors.black),
-            ),
+          child: Text(
+            text,
+            style: const TextStyle(color: Colors.black),
           ),
+        ),
       ),
     );
   }

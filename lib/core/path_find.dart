@@ -3,8 +3,10 @@ import 'dart:collection';
 import 'model.dart';
 
 // Breadth-First Search algorithm
-List<Coordinates> findShortestPath(List<String> grid, Coordinates start, Coordinates end) {
-  List<List<bool>> visited = List<List<bool>>.generate(grid.length, (index) => List<bool>.filled(grid[0].length, false));
+List<Coordinates> findShortestPath(
+    List<String> grid, Coordinates start, Coordinates end) {
+  List<List<bool>> visited = List<List<bool>>.generate(
+      grid.length, (index) => List<bool>.filled(grid[0].length, false));
   Queue<List<Coordinates>> queue = Queue<List<Coordinates>>();
   queue.add([start]);
 
@@ -16,7 +18,12 @@ List<Coordinates> findShortestPath(List<String> grid, Coordinates start, Coordin
       return path;
     }
 
-    if (current.x < 0 || current.x >= grid[0].length || current.y < 0 || current.y >= grid.length || grid[current.y][current.x] == 'X' || visited[current.y][current.x]) {
+    if (current.x < 0 ||
+        current.x >= grid[0].length ||
+        current.y < 0 ||
+        current.y >= grid.length ||
+        grid[current.y][current.x] == 'X' ||
+        visited[current.y][current.x]) {
       continue;
     }
 
@@ -42,4 +49,3 @@ List<Coordinates> findShortestPath(List<String> grid, Coordinates start, Coordin
 
   return [];
 }
-

@@ -68,8 +68,8 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               Text(
                 "Incorrect link",
-                style:
-                    TextStyle(color: _isCorrectLink ? Colors.white : Colors.red),
+                style: TextStyle(
+                    color: _isCorrectLink ? Colors.white : Colors.red),
               ),
               SizedBox(
                 height: MediaQuery.of(context).size.height * 0.65,
@@ -80,11 +80,12 @@ class _HomeScreenState extends State<HomeScreen> {
                     : 0.5,
                 child: StandartBtn(
                   text: "Start counting process",
-                  onPressed: _controller.text.isNotEmpty || _controller.text != ""
-                      ? () {
-                          _fetchData(_controller.text);
-                        }
-                      : () {},
+                  onPressed:
+                      _controller.text.isNotEmpty || _controller.text != ""
+                          ? () {
+                              _fetchData(_controller.text);
+                            }
+                          : () {},
                 ),
               ),
             ],
@@ -97,7 +98,7 @@ class _HomeScreenState extends State<HomeScreen> {
   // https://flutter.webspark.dev/flutter/api
   Future<void> _fetchData(String url) async {
     try {
-       showLoadingDialog(context);
+      showLoadingDialog(context);
       if (Uri.parse(url).isAbsolute) {
         var response = await http.get(Uri.parse(url));
 
@@ -114,39 +115,43 @@ class _HomeScreenState extends State<HomeScreen> {
             bool error = jsonResponse['error'];
 
             if (error) {
-               Navigator.of(context).pop();
+              Navigator.of(context).pop();
               setState(() {
                 _isCorrectLink = false;
               });
             } else {
-               Navigator.of(context).pop();
+              Navigator.of(context).pop();
               List<MyData> myDataList = [];
               for (var item in jsonResponse['data']) {
                 MyData data = MyData.fromJson(item);
                 myDataList.add(data);
               }
-              Navigator.push(context, MaterialPageRoute(builder: (context) => ProcessScreen(url: url, datas: myDataList)));
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) =>
+                          ProcessScreen(url: url, datas: myDataList)));
             }
           } else {
-             Navigator.of(context).pop();
+            Navigator.of(context).pop();
             setState(() {
               _isCorrectLink = false;
             });
           }
         } else {
-           Navigator.of(context).pop();
+          Navigator.of(context).pop();
           setState(() {
             _isCorrectLink = false;
           });
         }
       } else {
-         Navigator.of(context).pop();
+        Navigator.of(context).pop();
         setState(() {
           _isCorrectLink = false;
         });
       }
     } catch (e) {
-       Navigator.of(context).pop();
+      Navigator.of(context).pop();
       setState(() {
         _isCorrectLink = false;
       });
@@ -154,22 +159,22 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void showLoadingDialog(BuildContext context) {
-  showDialog(
-    context: context,
-    barrierDismissible: false,
-    builder: (BuildContext context) {
-      return Stack(
-        children: <Widget>[
-          ModalBarrier(
-            color: Colors.white.withOpacity(0.5),
-            dismissible: false,
-          ),
-          const Center(
-            child: CircularProgressIndicator(),
-          ),
-        ],
-      );
-    },
-  );
-}
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (BuildContext context) {
+        return Stack(
+          children: <Widget>[
+            ModalBarrier(
+              color: Colors.white.withOpacity(0.5),
+              dismissible: false,
+            ),
+            const Center(
+              child: CircularProgressIndicator(),
+            ),
+          ],
+        );
+      },
+    );
+  }
 }

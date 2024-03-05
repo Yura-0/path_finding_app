@@ -20,7 +20,7 @@ class MyData {
   Coordinates start;
   Coordinates end;
   String path;
-  List<Coordinates> steps; 
+  List<Coordinates> steps;
 
   MyData({
     required this.id,
@@ -49,9 +49,7 @@ class MyData {
       'end': end.toJson(),
       'path': path,
       'result': {
-        'steps': steps
-            .map((coord) => coord.toJson())
-            .toList(), 
+        'steps': steps.map((coord) => coord.toJson()).toList(),
         'path': path,
       },
     };
