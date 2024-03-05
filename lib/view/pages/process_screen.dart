@@ -6,6 +6,7 @@ import 'package:http/http.dart' as http;
 import '../../core/model.dart';
 import '../../core/path_find.dart';
 import '../widgets/standart_btn.dart';
+import 'res_list_screen.dart';
 
 class ProcessScreen extends StatefulWidget {
   final String url;
@@ -151,7 +152,14 @@ class _ProcessScreenState extends State<ProcessScreen> {
 
       // Обработка ответа
       if (response.statusCode == 200) {
-        print('Data sent successfully!');
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => ResListScreen(
+              datas: dataList,
+            ),
+          ),
+        );
       } else {
         setState(() {
           _isPosted = false;
