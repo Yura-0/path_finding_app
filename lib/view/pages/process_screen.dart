@@ -1,4 +1,7 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 
 import '../../core/model.dart';
 import '../../core/path_find.dart';
@@ -16,6 +19,7 @@ class ProcessScreen extends StatefulWidget {
 class _ProcessScreenState extends State<ProcessScreen> {
   double _progress = 0;
   List<Coordinates> shortestPaths = [];
+  bool _isPosted = true;
 
   @override
   void initState() {
@@ -25,19 +29,18 @@ class _ProcessScreenState extends State<ProcessScreen> {
 
   void _processData() async {
     for (int i = 0; i < widget.datas.length; i++) {
-      await Future.delayed(Duration(milliseconds: 500), () {
+      await Future.delayed(const Duration(milliseconds: 500), () {
         setState(() {
           shortestPaths.addAll(findShortestPath(widget.datas[i].field,
               widget.datas[i].start, widget.datas[i].end));
           widget.datas[i].path =
               shortestPaths.map((coord) => coord.toString()).join('->');
+          widget.datas[i].steps = shortestPaths;
           _progress = (i + 1) / widget.datas.length;
           shortestPaths = [];
         });
       });
-      
     }
-
   }
 
   @override
@@ -67,7 +70,7 @@ class _ProcessScreenState extends State<ProcessScreen> {
                     fontSize: 15,
                   ),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 10,
                 ),
                 Text(
@@ -77,7 +80,7 @@ class _ProcessScreenState extends State<ProcessScreen> {
                     fontSize: 20,
                   ),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 10,
                 ),
                 SizedBox(
@@ -91,6 +94,14 @@ class _ProcessScreenState extends State<ProcessScreen> {
                     strokeWidth: 5,
                   ),
                 ),
+                const SizedBox(
+                  height: 10,
+                ),
+                Text(
+                  "Error uploading to server",
+                  style:
+                      TextStyle(color: _isPosted ? Colors.white : Colors.red),
+                ),
                 SizedBox(
                   height: MediaQuery.of(context).size.height * 0.3,
                 ),
@@ -98,7 +109,14 @@ class _ProcessScreenState extends State<ProcessScreen> {
                   opacity: _progress * 100 < 100 ? 0.5 : 1,
                   child: StandartBtn(
                     text: "Send results to server",
-                    onPressed: _progress * 100 < 100 ? () {} : () {},
+                    onPressed: _progress * 100 < 100
+                        ? () {}
+                        : () {
+                            setState(() {
+                              _isPosted = true;
+                            });
+                            postData(widget.datas, widget.url);
+                          },
                   ),
                 ),
               ],
@@ -107,5 +125,42 @@ class _ProcessScreenState extends State<ProcessScreen> {
         ),
       ),
     );
+  }
+
+  void postData(List<MyData> dataList, String url) async {
+    List<Map<String, dynamic>> dataToSend = dataList
+        .map((data) => {
+              'id': data.id,
+              'result': {
+                'steps': data.steps.map((step) => step.toJson()).toList(),
+                'path': data.path,
+              }
+            })
+        .toList();
+
+    String jsonData = json.encode(dataToSend);
+
+    try {
+      final response = await http.post(
+        Uri.parse(url),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: jsonData,
+      );
+
+      // Обработка ответа
+      if (response.statusCode == 200) {
+        print('Data sent successfully!');
+      } else {
+        setState(() {
+          _isPosted = false;
+        });
+      }
+    } catch (e) {
+      setState(() {
+        _isPosted = false;
+      });
+    }
   }
 }

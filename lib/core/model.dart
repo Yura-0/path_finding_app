@@ -20,6 +20,7 @@ class MyData {
   Coordinates start;
   Coordinates end;
   String path;
+  List<Coordinates> steps; 
 
   MyData({
     required this.id,
@@ -27,6 +28,7 @@ class MyData {
     required this.start,
     required this.end,
     this.path = '',
+    this.steps = const [],
   });
 
   factory MyData.fromJson(Map<String, dynamic> json) {
@@ -46,6 +48,12 @@ class MyData {
       'start': start.toJson(),
       'end': end.toJson(),
       'path': path,
+      'result': {
+        'steps': steps
+            .map((coord) => coord.toJson())
+            .toList(), 
+        'path': path,
+      },
     };
   }
 }
