@@ -149,8 +149,6 @@ class _ProcessScreenState extends State<ProcessScreen> {
         },
         body: jsonData,
       );
-
-      // Обработка ответа
       if (response.statusCode == 200) {
         Navigator.push(
           context,

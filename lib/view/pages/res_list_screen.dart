@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../core/model.dart';
+import 'preview_screen.dart';
 
 class ResListScreen extends StatelessWidget {
   final List<MyData> datas;
@@ -37,8 +38,14 @@ class ResListScreen extends StatelessWidget {
                   ),
                 ),
                 onTap: () {
-                  // Добавьте код для перехода на следующий экран
-                  // При нажатии на элемент списка
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => PreviewScreen(
+                        data: datas[index],
+                      ),
+                    ),
+                  );
                 },
               );
             }),
